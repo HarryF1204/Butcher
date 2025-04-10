@@ -27,9 +27,8 @@ if __name__ == "__main__":
         run_admin()
         sys.exit()
 
-    services = ["wuauserv", "DoSvc", "BITS"]
+    services = ["DoSvc"]
     for svc in services:
         stop_and_disable_service(svc)
 
     print("All targeted services have been stopped and disabled.")
-    input("Press Enter to exit...")
