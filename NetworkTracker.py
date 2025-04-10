@@ -26,29 +26,23 @@ class NetworkTracker:
         return f"{b / 1024:.2f} KB"
 
     def monitor_traffic(self):
-        with pydivert.WinDivert("true") as w:
+        with pydivert.WinDivert("inbound and ip") as w:
             while self._tracking:
                 try:
                     packet = w.recv()
-                    
-                    ip = packet.src_addr, packet.src_port
+
+                    ip = packet.dst_addr, packet.dst_port
                     pid = self.conn_pid_map.get(ip)
-                    if not pid:
-                        ip = packet.dst_addr, packet.dst_port
-                        pid = self.conn_pid_map.get(ip)
-                        if not pid:
-                            try:
-                                w.send(packet)
-                            except OSError as e:
-                                continue
-                            continue
+                    if pid:
                         self.bandwidth[pid]['recv'] += len(packet.raw)
-                    else:
-                        self.bandwidth[pid]['sent'] += len(packet.raw)
+
+                    # Forward the packet no matter what
                     try:
                         w.send(packet)
-                    except OSError as e:
+                    except OSError:
                         continue
+                except Exception as e:
+                    print("Packet error:", e)
                 finally:
                     time.sleep(0.1)
     

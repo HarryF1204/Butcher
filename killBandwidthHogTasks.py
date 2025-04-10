@@ -48,7 +48,7 @@ class BandwidthHogKiller:
                             self.kill_task(pid)
                         elif process_name in self.config['ignore']:
                             continue
-                        elif data['sent'] > 0.1 or data['recv'] > 0.1:
+                        elif data['recv'] > 0.1:
                             if (self.yes_no_dialog(process_name)):
                                 self.config['kill'].append(process_name)
                                 self.kill_task(pid)
