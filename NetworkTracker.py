@@ -43,8 +43,6 @@ class NetworkTracker:
                         continue
                 except Exception as e:
                     print("Packet error:", e)
-                finally:
-                    time.sleep(0.1)
     
     def start_tracking(self):
         self._tracking = True
